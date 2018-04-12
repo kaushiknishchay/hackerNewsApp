@@ -7,6 +7,7 @@
     "eslint-plugin-import": "^2.10.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.7.0",
+    "eslint-plugin-react-native": "^3.2.1",
     "jest-expo": "26.0.0",
     "react-native-scripts": "1.13.1",
     "react-test-renderer": "16.3.0-alpha.1"
@@ -17,7 +18,9 @@
     "eject": "react-native-scripts eject",
     "android": "react-native-scripts android",
     "ios": "react-native-scripts ios",
-    "test": "jest"
+    "test": "jest",
+    "precommit": "yarn lint",
+    "lint": "(eslint --ext=js --ext=jsx . ) && echo Lint Passed! ALL Clear! ❤"
   },
   "jest": {
     "preset": "jest-expo"
