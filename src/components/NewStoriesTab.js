@@ -5,7 +5,7 @@ class NewStoriesTab extends Component {
   render() {
     return (
       <Text>
-        New Stories
+        New Stories{Math.random()}
       </Text>
     );
   }

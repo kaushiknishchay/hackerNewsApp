@@ -6,6 +6,8 @@ import TabLayout from './src/components/TabLayoutNavigator';
 import { primaryColor } from './src/constants/colors';
 
 
+console.ignoredYellowBox = ['Warning:', 'Warning: component'];
+
 const MainStack = StackNavigator({
   Tabs: {
     screen: TabLayout,
