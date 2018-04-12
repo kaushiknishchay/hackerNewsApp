@@ -50,6 +50,10 @@ class ListItem extends Component {
   }
 
   componentWillUnmount() {
+    // TODO the onEndreached is called multiple times
+    // add some check to prevent until loading finishes
+    // fetch the first 10 stories infor by default
+
     console.log('unmounted', this.props.storyId);
     if (this.fetchInfo$) { this.fetchInfo$.unsubscribe(); }
   }
