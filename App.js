@@ -10,6 +10,10 @@ import TabLayout from './src/components/TabLayoutNavigator';
 import { primaryColor } from './src/constants/colors';
 import StoryPage from './src/components/StoryPage';
 
+// @TODO Cleaned up code, create a hoc for teh stories tab
+// @TODO Implement Story Details Page with comments showing ad with a header
+// @TODO implement redux saga
+
 
 console.ignoredYellowBox = ['Warning:', 'Warning: component'];
 
