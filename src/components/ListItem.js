@@ -14,18 +14,21 @@ const ListTitle = styled.Text`
   font-size: 18px;
 `;
 
-const ListSubtitleWrap = styled.View`
-  margin-top: 8px;
+const ListSubTextWrap = styled.View`
+  margin-top: 10px;
   justify-content: space-between;
   flex-direction: row;
+  align-content: stretch;
   width: 100%;
 `;
 
-const ListSubtitle = styled.Text`
-  text-align: left;
+const ListSubText = styled.Text`
+  text-align: ${props => (props.align ? props.align : 'left')};
   font-size: 16px;
   flex: 1;
+  align-self: stretch;
   ${props => props.fontWeight && `font-weight: ${props.fontWeight};`}
+
 `;
 
 class ListItem extends PureComponent {
@@ -42,14 +45,14 @@ class ListItem extends PureComponent {
           <ListTitle>
             { newsObj.title }
           </ListTitle>
-          <ListSubtitleWrap>
-            <ListSubtitle fontWeight="bold">
+          <ListSubTextWrap>
+            <ListSubText fontWeight="bold">
               by { newsObj.by }
-            </ListSubtitle>
-            <ListSubtitle>
+            </ListSubText>
+            <ListSubText align="right">
               { newsTime }
-            </ListSubtitle>
-          </ListSubtitleWrap>
+            </ListSubText>
+          </ListSubTextWrap>
         </ListWrap>
       </TouchableOpacity>
     );

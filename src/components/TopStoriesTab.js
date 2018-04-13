@@ -17,7 +17,18 @@ class TopStoriesTab extends Component {
     super(props);
     this.state = {
       storiesList: [],
-      stories: [],
+      dummyStory: [],
+      stories: [{
+        "by" : "dhouston",
+        "descendants" : 71,
+        "id" : 8863,
+        "kids" : [ 8952, 9224, 8917, 8884, 8887, 8943, 8869, 8958, 9005, 9671, 8940, 9067, 8908, 9055, 8865, 8881, 8872, 8873, 8955, 10403, 8903, 8928, 9125, 8998, 8901, 8902, 8907, 8894, 8878, 8870, 8980, 8934, 8876 ],
+        "score" : 111,
+        "time" : 1175714200,
+        "title" : "My YC app: Dropbox - Throw away your USB drive",
+        "type" : "story",
+        "url" : "http://www.getdropbox.com/u/2/screencast.html"
+      }],
       currentIndex: 10,
       isLoading: true,
     };
@@ -36,17 +47,19 @@ class TopStoriesTab extends Component {
 
   componentDidMount() {
 
-    // fetch all 500 stories ids in one go on mount
-    this.fetchStories$ = api.fetchTopStories$.subscribe((data) => {
+    if(this.state.stories.length===0) {
+      // fetch all 500 stories ids in one go on mount
+      this.fetchStories$ = api.fetchTopStories$.subscribe((data) => {
 
-      // save them in storiesList
-      this.setState((state, props) => ({
-        storiesList: data,
-      }));
+        // save them in storiesList
+        this.setState((state, props) => ({
+          storiesList: data,
+        }));
 
-      this.get10StoriesInfo(0);
+        this.get10StoriesInfo(0);
 
-    });
+      });
+    }
   }
 
 
@@ -125,7 +138,7 @@ class TopStoriesTab extends Component {
   _renderListView = () => {
     const { stories } = this.state;
 
-    if (stories && stories.length >= 10) {
+    if (stories && stories.length > 0) {
       return (
         <FlatList
           style={ {

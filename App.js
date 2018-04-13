@@ -34,7 +34,7 @@ const MainStack = StackNavigator({
       backgroundColor: primaryColor,
     },
     headerTitleStyle: {
-      marginLeft: 30,
+      marginLeft: 10,
       fontWeight: 'bold',
     },
     headerTintColor: '#fff',
