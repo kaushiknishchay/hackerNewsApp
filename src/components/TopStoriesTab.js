@@ -86,7 +86,6 @@ class TopStoriesTab extends Component {
       api.fetchItemInfo(story)
         .then(res => res.data)
         .then((apiData) => {
-          console.log(apiData);
           this.add10StoryInfo$.next(apiData);
         });
     });
@@ -157,8 +156,6 @@ class TopStoriesTab extends Component {
   count = 1;
 
   render() {
-    const { stories } = this.state;
-
     console.log('count: ', this.count);
     this.count = this.count + 1;
 
