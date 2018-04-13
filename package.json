@@ -28,7 +28,9 @@
   "dependencies": {
     "@expo/vector-icons": "^6.3.1",
     "axios": "^0.18.0",
+    "babel-eslint": "^8.2.3",
     "eslint": "^4.19.1",
+    "eslint-plugin-babel": "^5.0.0",
     "expo": "^26.0.0",
     "prop-types": "latest",
     "react": "16.3.0",

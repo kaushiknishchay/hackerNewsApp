@@ -11,7 +11,7 @@ const defaultConfig = () => ({
 
 const fetchTopStories = () => axios.get('/topstories.json', defaultConfig());
 
-const fetchStoryInfo = id => axios.get(`/item/${id}.json`, defaultConfig());
+const fetchItemInfo = id => axios.get(`/item/${id}.json`, defaultConfig());
 
 export default {
   fetchTopStories$: Observable.fromPromise(fetchTopStories())
@@ -21,6 +21,6 @@ export default {
     .ajax(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
     // .delay(1000)
     .map(e => e.response).take(1),
-  fetchStoryInfo2$: id => fetchStoryInfo(id),
+  fetchItemInfo: id => fetchItemInfo(id),
 
 };
