@@ -1,10 +1,8 @@
-import React, { Component } from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 
-
-import api from '../service/httpApi';
-import { accentColor } from '../constants/colors';
+import PropTypes from 'prop-types';
+import { TouchableOpacity } from 'react-native';
 
 
 const ListWrap = styled.View`
@@ -16,71 +14,52 @@ const ListTitle = styled.Text`
   font-size: 18px;
 `;
 
-const ListAuthor = styled.Text`
-  margin-top: 5px;
-  font-size: 14px;
+const ListSubtitleWrap = styled.View`
+  margin-top: 8px;
+  justify-content: space-between;
+  flex-direction: row;
+  width: 100%;
 `;
 
-class ListItem extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      newsObj: null,
-    };
-  }
+const ListSubtitle = styled.Text`
+  text-align: left;
+  font-size: 16px;
+  flex: 1;
+  ${props => props.fontWeight && `font-weight: ${props.fontWeight};`}
+`;
 
-  componentDidMount() {
-    const { props } = this;
-
-    console.log();
-
-    if (props && props.storyId && this.state.newsObj === null) {
-      this.fetchInfo$ = api.fetchStoryInfo$(props.storyId)
-        .subscribe((data) => {
-          this.setState({
-            newsObj: data,
-          });
-        });
-    }
-  }
-
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.state.newsObj === null && nextState.newsObj !== null;
-  }
-
-  componentWillUnmount() {
-    // TODO the onEndreached is called multiple times
-    // add some check to prevent until loading finishes
-    // fetch the first 10 stories infor by default
-
-    console.log('unmounted', this.props.storyId);
-    if (this.fetchInfo$) { this.fetchInfo$.unsubscribe(); }
-  }
-
-
+class ListItem extends PureComponent {
   render() {
-    const { newsObj } = this.state;
+    const { story: newsObj } = this.props;
 
-    if (newsObj === null) {
-      return (<ActivityIndicator
-        style={{
-          height: 70,
-        }}
-        size="large"
-        color={accentColor}
-      />);
-    }
+    const newsTime = new Date(parseInt(`${newsObj.time}000`, 10)).toDateString();
 
     return (
-      <ListWrap key={this.props.storyId}>
-        <ListTitle>{newsObj.title}</ListTitle>
-        <ListAuthor>by {newsObj.by}</ListAuthor>
-      </ListWrap>
+      <TouchableOpacity
+        onPress={this.props.onPress}
+      >
+        <ListWrap>
+          <ListTitle>
+            { newsObj.title }
+          </ListTitle>
+          <ListSubtitleWrap>
+            <ListSubtitle fontWeight="bold">
+              by { newsObj.by }
+            </ListSubtitle>
+            <ListSubtitle>
+              { newsTime }
+            </ListSubtitle>
+          </ListSubtitleWrap>
+        </ListWrap>
+      </TouchableOpacity>
     );
   }
 }
 
-ListItem.propTypes = {};
+ListItem.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  story: PropTypes.object.isRequired,
+  onPress: PropTypes.func.isRequired,
+};
 
 export default ListItem;

@@ -26,7 +26,7 @@ export default TabNavigator({
     },
   },
 }, {
-  initialRouteName: 'NewStories',
+  initialRouteName: 'TopStories',
   navigationOptions: ({ navigation }) => ({
   }),
   tabBarOptions: {
