@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this,react/forbid-prop-types */
 import React, { Component } from 'react';
-import { ActivityIndicator, FlatList, Linking, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Linking, Text, TouchableOpacity, View } from 'react-native';
 import styled from 'styled-components';
 import { withMappedNavigationProps } from 'react-navigation-props-mapper';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -16,11 +16,14 @@ import CommentListItem from './CommentListItem';
 const StoryWrapper = styled.View`
   padding: 20px;
   background: #f5f5f5;
+  flex-direction: column;
 `;
 
 const StoryTitle = styled.Text`
   font-weight: bold;
   font-size: 20px;
+  flex-wrap: wrap;
+  width: 95%;
 `;
 
 const StoryTime = styled.Text`
@@ -48,7 +51,7 @@ const StoryUrlWrap = styled.View`
 const StoryUrl = styled.Text`  
   font-size: 16px;
   color: ${accentColor};
-  width: 90%;
+  width: 95%;
 `;
 
 const ListHeader = styled.Text`
@@ -61,6 +64,13 @@ const ListHeader = styled.Text`
 
 const ActivityWarp = styled.View`padding: 20px;`;
 
+const NoCommentsText = styled.Text`
+  text-align:center;
+  font-weight: bold;
+  padding: 25px;
+  background-color: #f5f5f5;
+`;
+
 class StoryPage extends Component {
   constructor(props) {
     super(props);
@@ -69,32 +79,46 @@ class StoryPage extends Component {
     this.state = {
       commentsList: [],
     };
-
-    this.kids$ = new Subject();
   }
 
 
   componentDidMount() {
-    const { kids } = this.props.item;
-    const bufferLimit = kids.length < 21 ? kids.length : 20;
-    const bufferedKeys$ = this.kids$.bufferCount(bufferLimit);
+    const { item: storyItem } = this.props;
 
-    bufferedKeys$.subscribe((data) => {
-      this.setState({
-        commentsList: data,
+    if (storyItem.kids && (typeof storyItem.kids !== 'undefined') && storyItem.kids.length > 0) {
+      this.kids$ = new Subject();
+
+      const { kids } = this.props.item;
+      const bufferLimit = kids.length < 21 ? kids.length : 20;
+      const bufferedKeys$ = this.kids$.bufferCount(bufferLimit);
+
+      bufferedKeys$.subscribe((data) => {
+        this.setState((state, props) => ({
+          commentsList: data,
+        }));
       });
-    });
 
-    kids.forEach((item, idx) => {
-      if (idx < 20) {
-        api.fetchItemInfo(item)
-          .then(res => res.data)
-          .then((apiData) => {
-            bufferedKeys$.next(apiData);
-          });
-      }
-    });
+      kids.forEach((item, idx) => {
+        if (idx < 20) {
+          api.fetchItemInfo(item)
+            .then(res => res.data)
+            .then((apiData) => {
+              bufferedKeys$.next(apiData);
+            });
+        }
+      });
+    }
   }
+
+
+  // TODO the text is not wrapping properly, find the issue
+
+  componentWillUnmount() {
+    if (this.kids$) {
+      this.kids$.unsubscribe();
+    }
+  }
+
 
   checkAndOpenUrl(url) {
     Linking.canOpenURL(url).then((supported) => {
@@ -126,33 +150,39 @@ class StoryPage extends Component {
   );
 
   renderCommentListView = () => {
+    const { item } = this.props;
     const { commentsList } = this.state;
 
-    if (!commentsList || commentsList.length > 0) {
+    if (item && item.kids) {
+      if (!commentsList || commentsList.length > 0) {
+        return (
+          <FlatList
+            ListHeaderComponent={
+              <ListHeader>Comments</ListHeader>
+            }
+            ItemSeparatorComponent={this.renderSeparator}
+            data={commentsList}
+            keyExtractor={this.keyExtractor}
+            renderItem={this.renderListItem}
+            initialNumberToRender={10}
+          />
+        );
+      }
       return (
-        <FlatList
-          ListHeaderComponent={
-            <ListHeader>Comments</ListHeader>
-          }
-          ItemSeparatorComponent={this.renderSeparator}
-          data={commentsList}
-          keyExtractor={this.keyExtractor}
-          renderItem={this.renderListItem}
-          initialNumberToRender={10}
-        />
-      );
+        <ActivityWarp>
+          <ActivityIndicator
+            color={accentColor}
+            size="large"
+          />
+        </ActivityWarp>);
     }
     return (
-      <ActivityWarp>
-        <ActivityIndicator
-          color={accentColor}
-          size="large"
-        />
-      </ActivityWarp>);
+      <View>
+        <NoCommentsText>No comments on this story yet.</NoCommentsText>
+      </View>);
   };
 
   render() {
-    const { commentsList } = this.state;
     const { item } = this.props;
     const {
       title, by, time, url,

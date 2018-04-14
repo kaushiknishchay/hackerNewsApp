@@ -10,11 +10,15 @@ const defaultConfig = () => ({
 
 
 const fetchTopStories = () => axios.get('/topstories.json', defaultConfig());
+const fetchNewStories = () => axios.get('/newstories.json', defaultConfig());
 
 const fetchItemInfo = id => axios.get(`/item/${id}.json`, defaultConfig());
 
 export default {
   fetchTopStories$: Observable.fromPromise(fetchTopStories())
+    .map(res => res.data)
+    .delay(1000),
+  fetchNewStories$: Observable.fromPromise(fetchNewStories())
     .map(res => res.data)
     .delay(1000),
   fetchStoryInfo$: id => Observable
