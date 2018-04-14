@@ -1,7 +1,9 @@
+/* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import { ActivityIndicator, FlatList, View } from 'react-native';
 import styled from 'styled-components';
 import { Subject } from 'rxjs';
+import PropTypes from 'prop-types';
 
 
 import { accentColor } from '../constants/colors';
@@ -12,6 +14,10 @@ export default function withStoryFetch(storyApiFetcher) {
   const ActivityWarp = styled.View`padding: 20px;`;
 
   return class extends React.Component {
+    static propTypes = {
+      navigation: PropTypes.object.isRequired,
+    };
+
     constructor(props) {
       super(props);
       this.state = {
@@ -32,21 +38,55 @@ export default function withStoryFetch(storyApiFetcher) {
     }
 
     componentDidMount() {
-      if (this.state.stories.length === 0) {
-        // fetch all 500 stories ids in one go on mount
-        this.fetchStories$ = storyApiFetcher.subscribe((data) => {
-          // save them in storiesList
-          this.setState((state, props) => ({
-            storiesList: data,
-          }));
+      this.props.navigation.addListener('willBlur', this.componentWillBlur);
+      this.props.navigation.addListener('didFocus', this.componentDidFocus);
 
-          this.get10StoriesInfo(0);
-        });
+      if (this.state.stories.length === 0) {
+        this.makeAPIRequest();
       }
     }
 
+    get10StoriesInfo = (startIndex) => {
+      if (this.state !== undefined && this.state.storiesList !== undefined) {
+        const { storiesList } = this.state;
+        const storyData = storiesList.slice(startIndex, startIndex + 10);
 
-    componentWillUnmount() {
+        this.setState((s, p) => ({
+          isLoading: true,
+          currentIndex: s.currentIndex + 10,
+        }));
+
+        storyData.forEach((story, indx) => {
+          api.fetchItemInfo(story)
+            .then(res => res.data)
+            .then((apiData) => {
+              this.add10StoryInfo$.next(apiData);
+            });
+        });
+      }
+    };
+
+    makeAPIRequest() {
+      // fetch all 500 stories ids in one go on mount
+      this.fetchStories$ = storyApiFetcher.subscribe((data) => {
+        // save them in storiesList
+        this.setState((state, props) => ({
+          storiesList: data,
+        }));
+
+        console.log('yellow');
+
+        this.get10StoriesInfo(0);
+      });
+    }
+
+    componentDidFocus() {
+      if (!this.add10StoryInfo$) {
+        this.add10StoryInfo$ = new Subject().bufferCount(10);
+      }
+    }
+
+    componentWillBlur() {
       if (this.add10StoryInfo$) {
         this.add10StoryInfo$.unsubscribe();
       }
@@ -55,26 +95,6 @@ export default function withStoryFetch(storyApiFetcher) {
         this.fetchStories$.unsubscribe();
       }
     }
-
-
-    get10StoriesInfo = (startIndex) => {
-      const { storiesList } = this.state;
-      const storyData = storiesList.slice(startIndex, startIndex + 10);
-
-      this.setState((s, p) => ({
-        isLoading: true,
-        currentIndex: s.currentIndex + 10,
-      }));
-
-
-      storyData.forEach((story, indx) => {
-        api.fetchItemInfo(story)
-          .then(res => res.data)
-          .then((apiData) => {
-            this.add10StoryInfo$.next(apiData);
-          });
-      });
-    };
 
     _addMoreStories = () => {
       const { currentIndex, isLoading } = this.state;
@@ -138,9 +158,11 @@ export default function withStoryFetch(storyApiFetcher) {
           />
         </ActivityWarp>);
     };
-    
-    render() {
 
+    render() {
+      if (this.state && this.state.storiesList === 0 && this.props.navigation.isFocused()) {
+        this.makeAPIRequest();
+      }
       return (
         <View
           style={{

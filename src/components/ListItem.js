@@ -11,7 +11,8 @@ const ListWrap = styled.View`
 `;
 
 const ListTitle = styled.Text`
-  font-size: 18px;
+  font-size: 17px;
+  width: 95%;
 `;
 
 const ListSubTextWrap = styled.View`

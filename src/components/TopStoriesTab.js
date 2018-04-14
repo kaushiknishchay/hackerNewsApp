@@ -48,20 +48,61 @@ class TopStoriesTab extends Component {
 
   componentDidMount() {
     if (this.state.stories.length === 0) {
-      // fetch all 500 stories ids in one go on mount
-      this.fetchStories$ = api.fetchTopStories$.subscribe((data) => {
-        // save them in storiesList
-        this.setState((state, props) => ({
-          storiesList: data,
-        }));
-
-        this.get10StoriesInfo(0);
-      });
+      this.makeAPIRequest();
     }
+
+    this.props.navigation.addListener('willBlur', this.componentWillBlur);
+    this.props.navigation.addListener('didFocus', this.componentDidFocus);
   }
 
-
   componentWillUnmount() {
+    this.props.navigation.removeListener('didFocus', this.componentDidFocus);
+    this.props.navigation.removeListener('willBlur', this.componentWillBlur);
+  }
+
+  get10StoriesInfo = (startIndex) => {
+    if (this.state !== undefined && this.state.storiesList !== undefined) {
+      const { storiesList } = this.state;
+
+      const storyData = storiesList.slice(startIndex, startIndex + 10);
+
+      this.setState((s, p) => ({
+        isLoading: true,
+        currentIndex: s.currentIndex + 10,
+      }));
+
+
+      storyData.forEach((story, indx) => {
+        api.fetchItemInfo(story)
+          .then(res => res.data)
+          .then((apiData) => {
+            this.add10StoryInfo$.next(apiData);
+          });
+      });
+    }
+  };
+
+  makeAPIRequest() {
+    // fetch all 500 stories ids in one go on mount
+    this.fetchStories$ = api.fetchTopStories$.subscribe((data) => {
+      // save them in storiesList
+      this.setState((state, props) => ({
+        storiesList: data,
+      }));
+      console.log('green');
+
+      this.get10StoriesInfo(0);
+    });
+  }
+
+  componentDidFocus() {
+    if (!this.add10StoryInfo$) {
+      this.add10StoryInfo$ = new Subject().bufferCount(10);
+    }
+    console.log(this.state, this.makeAPIRequest);
+  }
+
+  componentWillBlur() {
     if (this.add10StoryInfo$) {
       this.add10StoryInfo$.unsubscribe();
     }
@@ -70,26 +111,6 @@ class TopStoriesTab extends Component {
       this.fetchStories$.unsubscribe();
     }
   }
-
-
-  get10StoriesInfo = (startIndex) => {
-    const { storiesList } = this.state;
-    const storyData = storiesList.slice(startIndex, startIndex + 10);
-
-    this.setState((s, p) => ({
-      isLoading: true,
-      currentIndex: s.currentIndex + 10,
-    }));
-
-
-    storyData.forEach((story, indx) => {
-      api.fetchItemInfo(story)
-        .then(res => res.data)
-        .then((apiData) => {
-          this.add10StoryInfo$.next(apiData);
-        });
-    });
-  };
 
   _addMoreStories = () => {
     const { currentIndex, isLoading } = this.state;
@@ -156,6 +177,10 @@ class TopStoriesTab extends Component {
   count = 1;
 
   render() {
+    if (this.state && this.state.storiesList === 0 && this.props.navigation.isFocused()) {
+      this.makeAPIRequest();
+    }
+
     console.log('count: ', this.count);
     this.count = this.count + 1;
 
