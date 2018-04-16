@@ -10,10 +10,9 @@ import TabLayout from './src/navigation/TabLayoutNavigator';
 import { primaryColor } from './src/constants/colors';
 import StoryPage from './src/containers/StoryPage';
 
-// @TODO Cleaned up code, create a hoc for teh stories tab
-// @TODO Implement Story Details Page with comments showing ad with a header
-// @TODO implement redux saga
-
+// if (__DEV__) {
+//   console.ignoredYellowBox = ['Warning:', 'Warning: component'];
+// }
 
 const MainStack = StackNavigator({
   Tabs: {

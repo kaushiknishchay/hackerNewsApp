@@ -18,15 +18,15 @@ const fetchBestStories = () => axios.get('/beststories.json', defaultConfig());
 const fetchItemInfo = id => axios.get(`/item/${id}.json`, defaultConfig());
 
 export default {
-  fetchTopStories: fetchTopStories(),
+  fetchTopStories: () => fetchTopStories(),
 
   fetchNewStories$: Observable.fromPromise(fetchNewStories())
     .map(res => res.data)
     .delay(1000),
 
-  fetchNewStories: fetchNewStories(),
+  fetchNewStories: () => fetchNewStories(),
 
-  fetchBestStories: fetchBestStories(),
+  fetchBestStories: () => fetchBestStories(),
 
   fetchStoryInfo$: id => Observable
     .ajax(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
