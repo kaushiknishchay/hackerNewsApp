@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import { accentColor } from '../constants/colors';
 import api from '../service/httpApi';
 import ListItem from '../components/ListItem';
+import { errorType, ErrorView } from '../helpers/errorFunc';
 
 export default function withStoryFetch(storyApiFetcher) {
   const ActivityWarp = styled.View`padding: 20px;`;
@@ -25,6 +26,7 @@ export default function withStoryFetch(storyApiFetcher) {
         stories: [],
         currentIndex: 10,
         isLoading: true,
+        errorObj: {},
       };
 
       this.add10StoryInfo$ = new Subject().bufferCount(10);
@@ -38,13 +40,26 @@ export default function withStoryFetch(storyApiFetcher) {
     }
 
     componentDidMount() {
-      this.props.navigation.addListener('willBlur', this.componentWillBlur);
-      this.props.navigation.addListener('didFocus', this.componentDidFocus);
-
       if (this.state.stories.length === 0) {
-        this.makeAPIRequest();
+        // fetch all 500 stories ids in one go on mount
+        storyApiFetcher
+          .then(res => res.data)
+          .then((data) => {
+            // save them in storiesList
+            this.setState((state, props) => ({
+              storiesList: data,
+            }));
+
+            this.get10StoriesInfo(0);
+          })
+          .catch((err) => {
+            this.setState({
+              errorObj: errorType('Failed to fetch info from server'),
+            });
+          });
       }
     }
+
 
     get10StoriesInfo = (startIndex) => {
       if (this.state !== undefined && this.state.storiesList !== undefined) {
@@ -65,36 +80,6 @@ export default function withStoryFetch(storyApiFetcher) {
         });
       }
     };
-
-    makeAPIRequest() {
-      // fetch all 500 stories ids in one go on mount
-      this.fetchStories$ = storyApiFetcher.subscribe((data) => {
-        // save them in storiesList
-        this.setState((state, props) => ({
-          storiesList: data,
-        }));
-
-        console.log('yellow');
-
-        this.get10StoriesInfo(0);
-      });
-    }
-
-    componentDidFocus() {
-      if (!this.add10StoryInfo$) {
-        this.add10StoryInfo$ = new Subject().bufferCount(10);
-      }
-    }
-
-    componentWillBlur() {
-      if (this.add10StoryInfo$) {
-        this.add10StoryInfo$.unsubscribe();
-      }
-
-      if (this.fetchStories$) {
-        this.fetchStories$.unsubscribe();
-      }
-    }
 
     _addMoreStories = () => {
       const { currentIndex, isLoading } = this.state;
@@ -129,6 +114,14 @@ export default function withStoryFetch(storyApiFetcher) {
 
     _keyExtractor = (item, index) => item.id.toString();
 
+    _renderErrorView = () => {
+      if (this.state.errorObj.type && this.state.errorObj.msg) {
+        return (<ErrorView msg={this.state.errorObj.msg} />);
+      }
+
+      return null;
+    };
+
     _renderListView = () => {
       const { stories } = this.state;
 
@@ -160,15 +153,14 @@ export default function withStoryFetch(storyApiFetcher) {
     };
 
     render() {
-      if (this.state && this.state.storiesList === 0 && this.props.navigation.isFocused()) {
-        this.makeAPIRequest();
-      }
       return (
         <View
           style={{
             flex: 1,
           }}
         >
+          { this._renderErrorView() }
+
           { this._renderListView() }
         </View>
       );

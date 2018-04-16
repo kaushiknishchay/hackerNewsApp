@@ -1,16 +1,5 @@
-import React, { Component } from 'react';
-import { Text } from 'react-native';
+import React from 'react';
+import withStoryFetch from '../hoc/withStoryFetch';
+import api from '../service/httpApi';
 
-class BestStoriesTab extends Component {
-  render() {
-    return (
-      <Text>
-        Best Stories
-      </Text>
-    );
-  }
-}
-
-BestStoriesTab.propTypes = {};
-
-export default BestStoriesTab;
+export default withStoryFetch(api.fetchBestStories);

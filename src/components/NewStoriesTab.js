@@ -4,22 +4,4 @@ import { Observable } from 'rxjs';
 import withStoryFetch from '../hoc/withStoryFetch';
 import api from '../service/httpApi';
 
-class NewStoriesTab extends PureComponent {
-  componentDidMount() {
-    const obs = Observable.from([1, 2, 3, 4, 5, 6, 7, 8, 9]).bufferCount(3);
-    obs.subscribe(d => console.log(d));
-  }
-
-
-  render() {
-    return (
-      <Text>
-        New Stories{Math.random()}
-      </Text>
-    );
-  }
-}
-
-NewStoriesTab.propTypes = {};
-
-export default withStoryFetch(api.fetchNewStories$);
+export default withStoryFetch(api.fetchNewStories);

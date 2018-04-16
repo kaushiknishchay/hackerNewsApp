@@ -6,6 +6,9 @@
 # webstorm
 .idea
 
+# dummyData
+*dummy*
+
 # dependencies
 /node_modules
 

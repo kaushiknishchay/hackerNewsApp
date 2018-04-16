@@ -1,8 +1,7 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import PropTypes from 'prop-types';
-import { TouchableOpacity } from 'react-native';
 
 
 const CommentWrap = styled.View`
@@ -31,29 +30,25 @@ const SubText = styled.Text`
 
 `;
 
-class CommentListItem extends PureComponent {
-  render() {
-    const { comment: commentItem } = this.props;
+const CommentListItem = ({ comment: commentItem }) => {
+  const newsTime = new Date(parseInt(`${commentItem.time}000`, 10)).toDateString();
 
-    const newsTime = new Date(parseInt(`${commentItem.time}000`, 10)).toDateString();
-
-    return (
-      <CommentWrap>
-        <CommentText>
-          { commentItem.text }
-        </CommentText>
-        <SubTextWrap>
-          <SubText fontWeight="bold">
+  return (
+    <CommentWrap>
+      <CommentText>
+        { commentItem.text }
+      </CommentText>
+      <SubTextWrap>
+        <SubText fontWeight="bold">
               by { commentItem.by }
-          </SubText>
-          <SubText align="right">
-            { newsTime }
-          </SubText>
-        </SubTextWrap>
-      </CommentWrap>
-    );
-  }
-}
+        </SubText>
+        <SubText align="right">
+          { newsTime }
+        </SubText>
+      </SubTextWrap>
+    </CommentWrap>
+  );
+};
 
 CommentListItem.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types

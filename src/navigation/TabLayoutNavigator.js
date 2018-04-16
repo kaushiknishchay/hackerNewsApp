@@ -1,9 +1,9 @@
 import { TabNavigator } from 'react-navigation';
 
 
-import TopStoriesTabScreen from './TopStoriesTab';
-import NewStoriesTabScreen from './NewStoriesTab';
-import BestStoriesTabScreen from './BestStoriesTab';
+import TopStoriesTabScreen from '../components/TopStoriesTab';
+import NewStoriesTabScreen from '../components/NewStoriesTab';
+import BestStoriesTabScreen from '../components/BestStoriesTab';
 import { accentColor } from '../constants/colors';
 
 export default TabNavigator({

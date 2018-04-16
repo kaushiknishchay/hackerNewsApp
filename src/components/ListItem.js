@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import PropTypes from 'prop-types';
@@ -32,33 +32,29 @@ const ListSubText = styled.Text`
 
 `;
 
-class ListItem extends PureComponent {
-  render() {
-    const { story: newsObj } = this.props;
+const ListItem = ({ story: newsObj, onPress }) => {
+  const newsTime = new Date(parseInt(`${newsObj.time}000`, 10)).toDateString();
 
-    const newsTime = new Date(parseInt(`${newsObj.time}000`, 10)).toDateString();
-
-    return (
-      <TouchableOpacity
-        onPress={this.props.onPress}
-      >
-        <ListWrap>
-          <ListTitle>
-            { newsObj.title }
-          </ListTitle>
-          <ListSubTextWrap>
-            <ListSubText fontWeight="bold">
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+    >
+      <ListWrap>
+        <ListTitle>
+          { newsObj.title }
+        </ListTitle>
+        <ListSubTextWrap>
+          <ListSubText fontWeight="bold">
               by { newsObj.by }
-            </ListSubText>
-            <ListSubText align="right">
-              { newsTime }
-            </ListSubText>
-          </ListSubTextWrap>
-        </ListWrap>
-      </TouchableOpacity>
-    );
-  }
-}
+          </ListSubText>
+          <ListSubText align="right">
+            { newsTime }
+          </ListSubText>
+        </ListSubTextWrap>
+      </ListWrap>
+    </TouchableOpacity>
+  );
+};
 
 ListItem.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types

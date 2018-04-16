@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "commitizen": "^2.9.6",
+    "cz-conventional-changelog": "^2.1.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.10.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
@@ -19,8 +21,9 @@
     "android": "react-native-scripts android",
     "ios": "react-native-scripts ios",
     "test": "jest",
+    "commit": "git-cz",
     "precommit": "yarn lint",
-    "lint": "(eslint --ext=js --ext=jsx . ) && echo Lint Passed! ALL Clear! ❤"
+    "lint": "(eslint --ext=js . ) && echo Lint Passed! ALL Clear! ❤"
   },
   "jest": {
     "preset": "jest-expo"
@@ -42,5 +45,10 @@
     "redux-saga": "^0.16.0",
     "rxjs": "^5.5.9",
     "styled-components": "^3.2.5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

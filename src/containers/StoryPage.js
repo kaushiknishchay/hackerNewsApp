@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this,react/forbid-prop-types */
 import React, { Component } from 'react';
-import { ActivityIndicator, FlatList, Linking, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Linking, Alert, TouchableOpacity, View } from 'react-native';
 import styled from 'styled-components';
 import { withMappedNavigationProps } from 'react-navigation-props-mapper';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -10,7 +10,8 @@ import { Subject } from 'rxjs';
 
 import { accentColor } from '../constants/colors';
 import api from '../service/httpApi';
-import CommentListItem from './CommentListItem';
+import CommentListItem from '../components/CommentListItem';
+import { errorType, ErrorView } from '../helpers/errorFunc';
 
 
 const StoryWrapper = styled.View`
@@ -72,12 +73,17 @@ const NoCommentsText = styled.Text`
 `;
 
 class StoryPage extends Component {
+  static showAlert(title, msg) {
+    Alert.alert(title, msg);
+  }
+
   constructor(props) {
     super(props);
     this.checkAndOpenUrl = this.checkAndOpenUrl.bind(this);
 
     this.state = {
       commentsList: [],
+      errorObj: {},
     };
   }
 
@@ -92,11 +98,18 @@ class StoryPage extends Component {
       const bufferLimit = kids.length < 21 ? kids.length : 20;
       const bufferedKeys$ = this.kids$.bufferCount(bufferLimit);
 
-      bufferedKeys$.subscribe((data) => {
-        this.setState((state, props) => ({
-          commentsList: data,
-        }));
-      });
+      bufferedKeys$.subscribe(
+        (data) => {
+          this.setState((state, props) => ({
+            commentsList: data,
+          }));
+        },
+        (error) => {
+          this.setState({
+            errorObj: errorType('Can\'t get comments for this post.'),
+          });
+        },
+      );
 
       kids.forEach((item, idx) => {
         if (idx < 20) {
@@ -104,14 +117,17 @@ class StoryPage extends Component {
             .then(res => res.data)
             .then((apiData) => {
               bufferedKeys$.next(apiData);
+            })
+            .catch((e) => {
+              bufferedKeys$.unsubscribe();
+              this.setState({
+                errorObj: errorType('Error fetching comments for this post.'),
+              });
             });
         }
       });
     }
   }
-
-
-  // TODO the text is not wrapping properly, find the issue
 
   componentWillUnmount() {
     if (this.kids$) {
@@ -123,15 +139,24 @@ class StoryPage extends Component {
   checkAndOpenUrl(url) {
     Linking.canOpenURL(url).then((supported) => {
       if (!supported) {
-        console.log(`Can't handle url: ${url}`);
+        StoryPage.showAlert('URL Error', 'Can\'t open the URL');
       } else {
         return Linking.openURL(url);
       }
       return null;
-    }).catch(err => console.error('An error occurred', err));
+    }).catch(err =>
+      StoryPage.showAlert('URL Error', 'Error trying to open url'));
   }
 
   keyExtractor = (item, index) => item.id.toString();
+
+
+  _renderErrorView = () => {
+    if (this.state.errorObj.type && this.state.errorObj.msg) {
+      return (<ErrorView msg={this.state.errorObj.msg} />);
+    }
+    return null;
+  };
 
   renderListItem = ({ item, index }) => (
     <CommentListItem
@@ -182,6 +207,7 @@ class StoryPage extends Component {
       </View>);
   };
 
+
   render() {
     const { item } = this.props;
     const {
@@ -219,8 +245,11 @@ class StoryPage extends Component {
               <StoryUrl>{ url }</StoryUrl>
             </StoryUrlWrap>
           </TouchableOpacity>
-
         </StoryWrapper>
+        {
+          this._renderErrorView()
+        }
+
         {
           this.renderCommentListView()
         }
