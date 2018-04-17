@@ -1,7 +1,23 @@
-import React, { PureComponent } from 'react';
-import { Text } from 'react-native';
-import { Observable } from 'rxjs';
-import withStoryFetch from '../hoc/withStoryFetch';
-import api from '../service/httpApi';
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-export default withStoryFetch(api.fetchNewStories);
+
+import withStoryFetch from '../hoc/withStoryFetch';
+
+function initMapStateToProps(state) {
+  return {
+    storiesList: state.getIn(['feed', 'newStories']),
+  };
+}
+
+function initMapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    fetchStories: () => dispatch({ type: 'FETCH_NEW_STORIES' }),
+  }, dispatch);
+}
+
+export default connect(
+  initMapStateToProps,
+  initMapDispatchToProps,
+)(withStoryFetch());

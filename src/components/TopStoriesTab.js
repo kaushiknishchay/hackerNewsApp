@@ -1,6 +1,22 @@
 import React from 'react';
-
-import api from '../service/httpApi';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import withStoryFetch from '../hoc/withStoryFetch';
 
-export default withStoryFetch(api.fetchTopStories);
+function initMapStateToProps(state) {
+  const feed = state.get('feed');
+  return {
+    storiesList: feed.get('topStories'),
+  };
+}
+
+function initMapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    fetchStories: () => dispatch({ type: 'FETCH_TOP_STORIES' }),
+  }, dispatch);
+}
+
+export default connect(
+  initMapStateToProps,
+  initMapDispatchToProps,
+)(withStoryFetch());

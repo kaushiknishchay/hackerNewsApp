@@ -5,6 +5,7 @@
   "devDependencies": {
     "commitizen": "^2.9.6",
     "cz-conventional-changelog": "^2.1.0",
+    "deep-object-diff": "latest",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.10.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
@@ -23,6 +24,7 @@
     "test": "jest",
     "commit": "git-cz",
     "precommit": "yarn lint",
+    "addco": "git add . && yarn commit",
     "lint": "(eslint --ext=js . ) && echo Lint Passed! ALL Clear! ❤"
   },
   "jest": {
@@ -32,9 +34,11 @@
     "@expo/vector-icons": "^6.3.1",
     "axios": "^0.18.0",
     "babel-eslint": "^8.2.3",
+    "deep-diff": "latest",
     "eslint": "^4.19.1",
     "eslint-plugin-babel": "^5.0.0",
     "expo": "^26.0.0",
+    "immutable": "^3.8.2",
     "prop-types": "latest",
     "react": "16.3.0",
     "react-native": "0.54.0",
@@ -42,6 +46,7 @@
     "react-navigation-props-mapper": "^0.2.0",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
+    "redux-immutable": "^4.0.0",
     "redux-saga": "^0.16.0",
     "rxjs": "^5.5.9",
     "styled-components": "^3.2.5"
