@@ -3,6 +3,9 @@
 # expo
 .expo/
 
+android/
+ios/
+
 # webstorm
 .idea
 

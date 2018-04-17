@@ -1,11 +1,11 @@
 /* eslint-disable class-methods-use-this,react/forbid-prop-types */
 import React, { Component } from 'react';
-import { ActivityIndicator, FlatList, Linking, Alert, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Linking, TouchableOpacity, View } from 'react-native';
 import styled from 'styled-components';
 import { withMappedNavigationProps } from 'react-navigation-props-mapper';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import PropTypes from 'prop-types';
 import { Subject } from 'rxjs';
+import { MaterialIcons } from 'react-native-vector-icons';
 
 
 import { accentColor } from '../constants/colors';
