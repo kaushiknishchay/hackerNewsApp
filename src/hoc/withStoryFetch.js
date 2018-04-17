@@ -57,10 +57,6 @@ export default function withStoryFetch() {
 
     get10StoriesInfo = (startIndex) => {
       if (this.state !== undefined && this.props.storiesList.size > 0) {
-        // this.setState((s, p) => ({
-        //   isLoading: true,
-        // }));
-
         const { storiesList } = this.props;
         const storyData = storiesList.slice(startIndex, startIndex + 10);
 
