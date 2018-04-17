@@ -48,9 +48,8 @@ export default function withStoryFetch() {
     }
 
     componentDidUpdate(prevProps, prevState) {
-      if (this.props.storiesList.size > 0 &&
-        this.state.stories.length === 0 &&
-        this.state.isLoading === false) {
+      if ((prevProps.storiesList.size === 0 && this.props.storiesList.size > 0) &&
+        this.state.stories.length === 0) {
         this.get10StoriesInfo(0);
       }
     }
@@ -58,9 +57,9 @@ export default function withStoryFetch() {
 
     get10StoriesInfo = (startIndex) => {
       if (this.state !== undefined && this.props.storiesList.size > 0) {
-        this.setState((s, p) => ({
-          isLoading: true,
-        }));
+        // this.setState((s, p) => ({
+        //   isLoading: true,
+        // }));
 
         const { storiesList } = this.props;
         const storyData = storiesList.slice(startIndex, startIndex + 10);
