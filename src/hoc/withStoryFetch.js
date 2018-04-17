@@ -26,7 +26,7 @@ export default function withStoryFetch() {
       this.state = {
         stories: [],
         currentIndex: 10,
-        isLoading: false,
+        isLoading: true,
         errorObj: {},
       };
 
@@ -59,6 +59,12 @@ export default function withStoryFetch() {
       if (this.state !== undefined && this.props.storiesList.size > 0) {
         const { storiesList } = this.props;
         const storyData = storiesList.slice(startIndex, startIndex + 10);
+
+        if (!this.state.isLoading) {
+          this.setState((s, p) => ({
+            isLoading: true,
+          }));
+        }
 
         storyData.forEach((story, indx) => {
           api.fetchItemInfo(story)
