@@ -1,4 +1,6 @@
 import { TabNavigator } from 'react-navigation';
+import { Button } from 'react-native';
+import React from 'react';
 
 
 import TopStoriesTabScreen from '../components/TopStoriesTab';
