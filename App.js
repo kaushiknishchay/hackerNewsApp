@@ -6,16 +6,13 @@ import { Provider } from 'react-redux';
 
 import configureStore from './src/store';
 
-import TabLayout from './src/components/TabLayoutNavigator';
+import TabLayout from './src/navigation/TabLayoutNavigator';
 import { primaryColor } from './src/constants/colors';
-import StoryPage from './src/components/StoryPage';
+import StoryPage from './src/containers/StoryPage';
 
-// @TODO Cleaned up code, create a hoc for teh stories tab
-// @TODO Implement Story Details Page with comments showing ad with a header
-// @TODO implement redux saga
-
-
-console.ignoredYellowBox = ['Warning:', 'Warning: component'];
+// if (__DEV__) {
+//   console.ignoredYellowBox = ['Warning:', 'Warning: component'];
+// }
 
 const MainStack = StackNavigator({
   Tabs: {
@@ -47,14 +44,11 @@ const AppContainer = styled.View`
 
 const store = configureStore();
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <Provider store={store}>
-        <AppContainer>
-          <MainStack />
-        </AppContainer>
-      </Provider>
-    );
-  }
-}
+const RootApp = () => (
+  <Provider store={store}>
+    <AppContainer>
+      <MainStack />
+    </AppContainer>
+  </Provider>
+);
+export default RootApp;

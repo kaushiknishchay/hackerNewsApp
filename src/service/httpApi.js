@@ -18,25 +18,21 @@ const fetchBestStories = () => axios.get('/beststories.json', defaultConfig());
 const fetchItemInfo = id => axios.get(`/item/${id}.json`, defaultConfig());
 
 export default {
-  fetchTopStories: Observable.fromPromise(fetchTopStories())
+  fetchTopStories: () => fetchTopStories(),
+
+  fetchNewStories$: Observable.fromPromise(fetchNewStories())
     .map(res => res.data)
     .delay(1000),
-  fetchTopStories$: Observable.ajax(`${baseUrl}/topstories.json`)
-    .map(res => res.response)
-    .delay(1000),
-  fetchNewStories$: Observable.ajax(`${baseUrl}/newstories.json`)
-    .map(res => res.response)
-    .delay(1000),
-  fetchNewStories: Observable.fromPromise(fetchNewStories())
-    .map(res => res.data)
-    .delay(1000),
-  fetchBestStories$: Observable.fromPromise(fetchNewStories())
-    .map(res => res.data)
-    .delay(1000),
+
+  fetchNewStories: () => fetchNewStories(),
+
+  fetchBestStories: () => fetchBestStories(),
+
   fetchStoryInfo$: id => Observable
     .ajax(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
-    // .delay(1000)
+    .delay(1000)
     .map(e => e.response).take(1),
+
   fetchItemInfo: id => fetchItemInfo(id),
 
 };

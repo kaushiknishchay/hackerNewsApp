@@ -1,16 +1,18 @@
 /* eslint-disable class-methods-use-this,react/forbid-prop-types */
 import React, { Component } from 'react';
-import { ActivityIndicator, FlatList, Linking, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, PermissionsAndroid, Alert, FlatList, Linking, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
 import { withMappedNavigationProps } from 'react-navigation-props-mapper';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import PropTypes from 'prop-types';
 import { Subject } from 'rxjs';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+// import LocationServicesDialogBox from 'react-native-android-location-services-dialog-box';
 
 
 import { accentColor } from '../constants/colors';
 import api from '../service/httpApi';
-import CommentListItem from './CommentListItem';
+import CommentListItem from '../components/CommentListItem';
+import { errorType, ErrorView } from '../helpers/errorFunc';
 
 
 const StoryWrapper = styled.View`
@@ -72,17 +74,23 @@ const NoCommentsText = styled.Text`
 `;
 
 class StoryPage extends Component {
+  static showAlert(title, msg) {
+    Alert.alert(title, msg);
+  }
+
   constructor(props) {
     super(props);
     this.checkAndOpenUrl = this.checkAndOpenUrl.bind(this);
 
     this.state = {
       commentsList: [],
+      errorObj: {},
     };
   }
 
-
   componentDidMount() {
+    // this.requestLocationPermission();
+
     const { item: storyItem } = this.props;
 
     if (storyItem.kids && (typeof storyItem.kids !== 'undefined') && storyItem.kids.length > 0) {
@@ -92,11 +100,18 @@ class StoryPage extends Component {
       const bufferLimit = kids.length < 21 ? kids.length : 20;
       const bufferedKeys$ = this.kids$.bufferCount(bufferLimit);
 
-      bufferedKeys$.subscribe((data) => {
-        this.setState((state, props) => ({
-          commentsList: data,
-        }));
-      });
+      bufferedKeys$.subscribe(
+        (data) => {
+          this.setState((state, props) => ({
+            commentsList: data,
+          }));
+        },
+        (error) => {
+          this.setState({
+            errorObj: errorType('Can\'t get comments for this post.'),
+          });
+        },
+      );
 
       kids.forEach((item, idx) => {
         if (idx < 20) {
@@ -104,34 +119,98 @@ class StoryPage extends Component {
             .then(res => res.data)
             .then((apiData) => {
               bufferedKeys$.next(apiData);
+            })
+            .catch((e) => {
+              bufferedKeys$.unsubscribe();
+              this.setState({
+                errorObj: errorType('Error fetching comments for this post.'),
+              });
             });
         }
       });
     }
+
+    // this.alertLocationDemo();
   }
-
-
-  // TODO the text is not wrapping properly, find the issue
-
   componentWillUnmount() {
     if (this.kids$) {
       this.kids$.unsubscribe();
     }
   }
 
+  // alertLocationDemo = () => {
+  //   LocationServicesDialogBox.checkLocationServicesIsEnabled({
+  //     message: "<h2>Use Location ?</h2>This app wants to change your device settings:<br/>
+  // <br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
+  //     ok: 'YES',
+  //     cancel: 'NO',
+  //     enableHighAccuracy: false, // true => GPS AND NETWORK PROVIDER, false => GPS OR NETWORK=
+  //     showDialog: true, // false => Opens the Location access page directly
+  //     openLocationServices: true,
+  // // false => Directly catch is called if location services are off
+  //     preventOutSideTouch: true,
+  //     // true => To prevent location services popup closing when clicked outside
+  //     preventBackClick: false,
+  //     // true => To prevent location services popup closing when clicked back button
+  //   }).then((success) => {
+  //     navigator.geolocation.getCurrentPosition((location) => {
+  //       Alert.alert('Location', JSON.stringify(location.coords));
+  //     }, (err) => {
+  //       Alert.alert('Navigator Error', JSON.stringify(err));
+  //     }, {
+  //       timeout: 5000,
+  //       enableHighAccuracy: false,
+  //     });
+  //   })
+  //     .catch((err) => {
+  //       Alert.alert('error', JSON.stringify(err));
+  //     });
+  // }
+
+  // async requestLocationPermission() {
+  //   const chckLocationPermission = PermissionsAndroid.check(PermissionsAndroid
+  //     .PERMISSIONS.ACCESS_FINE_LOCATION);
+  //   if (chckLocationPermission !== PermissionsAndroid.RESULTS.GRANTED) {
+  //     try {
+  //       const granted = await PermissionsAndroid.request(
+  //         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  //         {
+  //           title: 'Cool Location App required Location permission',
+  //           message: 'We required Location permission in order to get device location ' +
+  //                       'Please grant us.',
+  //         },
+  //       );
+  //       if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+  //         Alert.alert('Location Error', "You don't have access for the location");
+  //       }
+  //     } catch (err) {
+  //       Alert.alert(err);
+  //     }
+  //   }
+  // }
+
 
   checkAndOpenUrl(url) {
     Linking.canOpenURL(url).then((supported) => {
       if (!supported) {
-        console.log(`Can't handle url: ${url}`);
+        StoryPage.showAlert('URL Error', 'Can\'t open the URL');
       } else {
         return Linking.openURL(url);
       }
       return null;
-    }).catch(err => console.error('An error occurred', err));
+    }).catch(err =>
+      StoryPage.showAlert('URL Error', 'Error trying to open url'));
   }
 
   keyExtractor = (item, index) => item.id.toString();
+
+
+  _renderErrorView = () => {
+    if (this.state.errorObj.type && this.state.errorObj.msg) {
+      return (<ErrorView msg={this.state.errorObj.msg} />);
+    }
+    return null;
+  };
 
   renderListItem = ({ item, index }) => (
     <CommentListItem
@@ -182,6 +261,7 @@ class StoryPage extends Component {
       </View>);
   };
 
+
   render() {
     const { item } = this.props;
     const {
@@ -219,8 +299,11 @@ class StoryPage extends Component {
               <StoryUrl>{ url }</StoryUrl>
             </StoryUrlWrap>
           </TouchableOpacity>
-
         </StoryWrapper>
+        {
+          this._renderErrorView()
+        }
+
         {
           this.renderCommentListView()
         }

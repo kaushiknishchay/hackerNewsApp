@@ -1,16 +1,25 @@
-import React, { Component } from 'react';
-import { Text } from 'react-native';
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-class BestStoriesTab extends Component {
-  render() {
-    return (
-      <Text>
-        Best Stories
-      </Text>
-    );
-  }
+
+import withStoryFetch from '../hoc/withStoryFetch';
+import api from '../service/httpApi';
+
+
+function initMapStateToProps(state) {
+  return {
+    storiesList: state.getIn(['feed', 'bestStories']),
+  };
 }
 
-BestStoriesTab.propTypes = {};
+function initMapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    fetchStories: () => dispatch({ type: 'FETCH_BEST_STORIES' }),
+  }, dispatch);
+}
 
-export default BestStoriesTab;
+export default connect(
+  initMapStateToProps,
+  initMapDispatchToProps,
+)(withStoryFetch(api.fetchBestStories));

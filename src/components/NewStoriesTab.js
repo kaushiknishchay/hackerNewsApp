@@ -1,25 +1,23 @@
-import React, { PureComponent } from 'react';
-import { Text } from 'react-native';
-import { Observable } from 'rxjs';
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+
 import withStoryFetch from '../hoc/withStoryFetch';
-import api from '../service/httpApi';
 
-class NewStoriesTab extends PureComponent {
-  componentDidMount() {
-    const obs = Observable.from([1, 2, 3, 4, 5, 6, 7, 8, 9]).bufferCount(3);
-    obs.subscribe(d => console.log(d));
-  }
-
-
-  render() {
-    return (
-      <Text>
-        New Stories{Math.random()}
-      </Text>
-    );
-  }
+function initMapStateToProps(state) {
+  return {
+    storiesList: state.getIn(['feed', 'newStories']),
+  };
 }
 
-NewStoriesTab.propTypes = {};
+function initMapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    fetchStories: () => dispatch({ type: 'FETCH_NEW_STORIES' }),
+  }, dispatch);
+}
 
-export default withStoryFetch(api.fetchNewStories$);
+export default connect(
+  initMapStateToProps,
+  initMapDispatchToProps,
+)(withStoryFetch());
