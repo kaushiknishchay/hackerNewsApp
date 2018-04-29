@@ -1,12 +1,12 @@
 /* eslint-disable class-methods-use-this,react/forbid-prop-types */
 import React, { Component } from 'react';
-import { ActivityIndicator, PermissionsAndroid, Alert, FlatList, Linking, View, TouchableOpacity, Geolocation } from 'react-native';
+import { ActivityIndicator, PermissionsAndroid, Alert, FlatList, Linking, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
 import { withMappedNavigationProps } from 'react-navigation-props-mapper';
 import PropTypes from 'prop-types';
 import { Subject } from 'rxjs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import LocationServicesDialogBox from 'react-native-android-location-services-dialog-box';
+// import LocationServicesDialogBox from 'react-native-android-location-services-dialog-box';
 
 
 import { accentColor } from '../constants/colors';
@@ -89,7 +89,7 @@ class StoryPage extends Component {
   }
 
   componentDidMount() {
-    this.requestLocationPermission();
+    // this.requestLocationPermission();
 
     const { item: storyItem } = this.props;
 
@@ -130,7 +130,7 @@ class StoryPage extends Component {
       });
     }
 
-    this.alertLocationDemo();
+    // this.alertLocationDemo();
   }
   componentWillUnmount() {
     if (this.kids$) {
@@ -138,54 +138,56 @@ class StoryPage extends Component {
     }
   }
 
-  alertLocationDemo = () => {
-    LocationServicesDialogBox.checkLocationServicesIsEnabled({
-      message: "<h2>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
-      ok: 'YES',
-      cancel: 'NO',
-      enableHighAccuracy: false, // true => GPS AND NETWORK PROVIDER, false => GPS OR NETWORK=
-      showDialog: true, // false => Opens the Location access page directly
-      openLocationServices: true, // false => Directly catch is called if location services are off
-      preventOutSideTouch: true,
-      // true => To prevent location services popup closing when clicked outside
-      preventBackClick: false,
-      // true => To prevent location services popup closing when clicked back button
-    }).then((success) => {
-      navigator.geolocation.getCurrentPosition((location) => {
-        Alert.alert('Location', JSON.stringify(location.coords));
-      }, (err) => {
-        Alert.alert('Navigator Error', JSON.stringify(err));
-      }, {
-        timeout: 5000,
-        enableHighAccuracy: false,
-      });
-    })
-      .catch((err) => {
-        Alert.alert('error', JSON.stringify(err));
-      });
-  }
+  // alertLocationDemo = () => {
+  //   LocationServicesDialogBox.checkLocationServicesIsEnabled({
+  //     message: "<h2>Use Location ?</h2>This app wants to change your device settings:<br/>
+  // <br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
+  //     ok: 'YES',
+  //     cancel: 'NO',
+  //     enableHighAccuracy: false, // true => GPS AND NETWORK PROVIDER, false => GPS OR NETWORK=
+  //     showDialog: true, // false => Opens the Location access page directly
+  //     openLocationServices: true,
+  // // false => Directly catch is called if location services are off
+  //     preventOutSideTouch: true,
+  //     // true => To prevent location services popup closing when clicked outside
+  //     preventBackClick: false,
+  //     // true => To prevent location services popup closing when clicked back button
+  //   }).then((success) => {
+  //     navigator.geolocation.getCurrentPosition((location) => {
+  //       Alert.alert('Location', JSON.stringify(location.coords));
+  //     }, (err) => {
+  //       Alert.alert('Navigator Error', JSON.stringify(err));
+  //     }, {
+  //       timeout: 5000,
+  //       enableHighAccuracy: false,
+  //     });
+  //   })
+  //     .catch((err) => {
+  //       Alert.alert('error', JSON.stringify(err));
+  //     });
+  // }
 
-  async requestLocationPermission() {
-    const chckLocationPermission = PermissionsAndroid.check(PermissionsAndroid
-      .PERMISSIONS.ACCESS_FINE_LOCATION);
-    if (chckLocationPermission !== PermissionsAndroid.RESULTS.GRANTED) {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: 'Cool Location App required Location permission',
-            message: 'We required Location permission in order to get device location ' +
-                        'Please grant us.',
-          },
-        );
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          Alert.alert('Location Error', "You don't have access for the location");
-        }
-      } catch (err) {
-        Alert.alert(err);
-      }
-    }
-  }
+  // async requestLocationPermission() {
+  //   const chckLocationPermission = PermissionsAndroid.check(PermissionsAndroid
+  //     .PERMISSIONS.ACCESS_FINE_LOCATION);
+  //   if (chckLocationPermission !== PermissionsAndroid.RESULTS.GRANTED) {
+  //     try {
+  //       const granted = await PermissionsAndroid.request(
+  //         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  //         {
+  //           title: 'Cool Location App required Location permission',
+  //           message: 'We required Location permission in order to get device location ' +
+  //                       'Please grant us.',
+  //         },
+  //       );
+  //       if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+  //         Alert.alert('Location Error', "You don't have access for the location");
+  //       }
+  //     } catch (err) {
+  //       Alert.alert(err);
+  //     }
+  //   }
+  // }
 
 
   checkAndOpenUrl(url) {
