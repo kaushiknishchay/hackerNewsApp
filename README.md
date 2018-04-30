@@ -31,6 +31,6 @@ Run `yarn test` to run on a device or emulator
 
 # Screenshots
 
-![Screenshot 1](https://raw.githubusercontent.com/kaushiknishchay/hackerNewsApp/master/screenshots/1.jpg "ScreenShot 1")
+<img src="https://raw.githubusercontent.com/kaushiknishchay/hackerNewsApp/master/screenshots/1.jpg" width="300"/>
 
-![Screenshot 2](https://raw.githubusercontent.com/kaushiknishchay/hackerNewsApp/master/screenshots/4.jpg "ScreenShot 2")
+<img src="https://raw.githubusercontent.com/kaushiknishchay/hackerNewsApp/master/screenshots/4.jpg" width="300"/>
