@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Linking, Alert } from 'react-native';
 
 import PropTypes from 'prop-types';
+import HTML from 'react-native-render-html';
 
 
 const CommentWrap = styled.View`
@@ -9,7 +11,7 @@ const CommentWrap = styled.View`
   padding: 22px;
 `;
 
-const CommentText = styled.Text`
+const CommentText = styled(HTML)`
   font-size: 16px;
 `;
 
@@ -30,14 +32,35 @@ const SubText = styled.Text`
 
 `;
 
+const checkAndOpenUrl = (url) => {
+  Linking.canOpenURL(url).then((supported) => {
+    if (!supported) {
+      Alert.alert('URL Error', 'Can\'t open the URL');
+    } else {
+      return Linking.openURL(url);
+    }
+    return null;
+  }).catch(err =>
+    Alert.alert('URL Error', 'Error trying to open url'));
+};
+
+
+const onLinkPress = (event, href) => {
+  checkAndOpenUrl(href);
+};
+
 const CommentListItem = ({ comment: commentItem }) => {
   const newsTime = new Date(parseInt(`${commentItem.time}000`, 10)).toDateString();
 
   return (
     <CommentWrap>
-      <CommentText>
-        { commentItem.text }
-      </CommentText>
+      <CommentText
+        baseFontStyle={{
+          fontSize: 16,
+        }}
+        html={commentItem.text}
+        onLinkPress={onLinkPress}
+      />
       <SubTextWrap>
         <SubText fontWeight="bold">
               by { commentItem.by }
