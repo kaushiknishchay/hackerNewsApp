@@ -5,7 +5,7 @@
   "devDependencies": {
     "babel-preset-react-native-stage-0": "^1.0.1",
     "commitizen": "^3.0.4",
-    "cz-conventional-changelog": "^2.1.0",
+    "cz-conventional-changelog": "^3.0.2",
     "deep-object-diff": "latest",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.10.0",
