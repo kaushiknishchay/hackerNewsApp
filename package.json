@@ -32,7 +32,7 @@
     "preset": "react-native"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "babel-eslint": "^8.2.3",
     "deep-diff": "latest",
     "eslint": "^4.19.1",
