@@ -4085,7 +4085,7 @@ hoek@4.x.x:
   resolved "https://registry.yarnpkg.com/hoek/-/hoek-4.2.1.tgz#9634502aa12c445dd5a7c5734b572bb8738aacbb"
   integrity sha512-QLg82fGkfnJ/4iy1xZ81/9SIJiq1NGFUMGs6ParyjBZr6jW2Ufj/snDqTHixNlHdPNwN2RLVD0Pi3igeK9+JfA==
 
-hoist-non-react-statics@^2.2.0, hoist-non-react-statics@^2.2.1, hoist-non-react-statics@^2.3.1:
+hoist-non-react-statics@^2.2.0, hoist-non-react-statics@^2.3.1:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.0.tgz#d2ca2dfc19c5a91c5a6615ce8e564ef0347e2a40"
   integrity sha512-6Bl6XsDT1ntE0lHbIhr4Kp2PGcleGZ66qu5Jqk8lc0Xc/IeG6gVLmwUGs/K0Us+L8VWoKgj0uWdPMataOsm31w==
@@ -6639,12 +6639,12 @@ react-native@0.61.4:
     stacktrace-parser "^0.1.3"
     whatwg-fetch "^3.0.0"
 
-react-navigation-props-mapper@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/react-navigation-props-mapper/-/react-navigation-props-mapper-0.2.0.tgz#894da9c433c226e8a4bacad87e5277f27838821d"
-  integrity sha512-FhtC3bD0vPwnQzXGLMvjp/QKTwhzeStSdWOul0qYgrkhl35DAeO4LQlHmCMyHGPYnuy7tS7Ki++f2eeRZf0OLQ==
+react-navigation-props-mapper@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-navigation-props-mapper/-/react-navigation-props-mapper-2.0.0.tgz#12f801f6f39171b2c1aef95b36b1b5971aa17f87"
+  integrity sha512-+K3oEjWTWPTxKoXIe0vUG+pbBGc66BJc4jNgMN6XoACtEgdujGCtW6dHLnq123sFgX1Lsnd1Tgt/BoJlSGIDUA==
   dependencies:
-    hoist-non-react-statics "^2.2.1"
+    hoist-non-react-statics "^3.3.0"
 
 react-navigation@^1.5.11:
   version "1.5.11"
