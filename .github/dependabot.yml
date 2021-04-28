@@ -1,0 +1,22 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "23:30"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: rxjs
+    versions:
+    - 6.6.3
+    - 6.6.6
+  - dependency-name: react-native-vector-icons
+    versions:
+    - 8.0.0
+  - dependency-name: react-navigation
+    versions:
+    - 4.4.3
+  - dependency-name: handlebars
+    versions:
+    - 4.7.6
